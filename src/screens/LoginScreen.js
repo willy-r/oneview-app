@@ -3,6 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 
 const schema = yup.object({
@@ -11,6 +12,7 @@ const schema = yup.object({
 });
 
 export default function LoginScreen() {
+  const navigation = useNavigation();
   const {
     control,
     handleSubmit,
@@ -80,6 +82,9 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <Text className="text-sm text-gray-500">Esqueceu sua senha?</Text>
+      <TouchableOpacity className="mt-4" onPress={() => navigation.navigate('Register')}>
+        <Text className="text-center text-blue-500">Não tem uma conta? Cadastre-se</Text>
+      </TouchableOpacity>
     </View>
   );
 }
