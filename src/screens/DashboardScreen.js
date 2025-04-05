@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator  } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert  } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { faker } from '@faker-js/faker';
@@ -9,12 +9,23 @@ import * as Clipboard from 'expo-clipboard';
 import { ptBR } from 'date-fns/locale';
 
 import { AuthContext } from '../context/AuthContext';
+import { useWebSocket } from '../hooks/useWebSocket';
 import { api } from '../services/api';
 
 export default function DashboardScreen() {
-  const { logout } = useContext(AuthContext);
+  const { logout, userId } = useContext(AuthContext);
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+
+  useWebSocket(userId, (msg) => {
+    if (msg === 'new_message') {
+      Alert.alert('Nova mensagem!', 'Você recebeu uma nova mensagem.');
+      fetchCodeAndMessages();
+    }
+    if (msg === 'message_read') {
+      Alert.alert('Mensagem lida', 'Uma das suas mensagens foi lida.');
+    }
+  });
 
   const [code, setCode] = useState('');
   const [messages, setMessages] = useState([]);
@@ -33,7 +44,7 @@ export default function DashboardScreen() {
       msgRes.data.forEach((message) => {
         namesBySenderId[message.sender_id] = faker.person.fullName();
       });
-            
+
       const messagesWithNames = msgRes.data.map((message) => ({
         ...message,
         name: namesBySenderId[message.sender_id],

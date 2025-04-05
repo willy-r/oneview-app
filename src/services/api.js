@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const api = axios.create({
-  baseURL: 'https://28d3-138-0-72-97.ngrok-free.app',
+  baseURL: 'https://de54-138-0-72-97.ngrok-free.app',
 });
 
 export const setupInterceptors = (logout) => {
