@@ -29,9 +29,14 @@ export default function DashboardScreen() {
       setCode(res.data.public_code);
 
       const msgRes = await api.get('/messages/my');
+      const namesBySenderId = {};
+      msgRes.data.forEach((message) => {
+        namesBySenderId[message.sender_id] = faker.person.fullName();
+      });
+            
       const messagesWithNames = msgRes.data.map((message) => ({
         ...message,
-        name: faker.person.fullName(),
+        name: namesBySenderId[message.sender_id],
       }));
       setMessages(messagesWithNames);
     } catch (err) {
@@ -81,6 +86,12 @@ export default function DashboardScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white pt-6 px-6">
       <View className="items-end mb-4">
+        <TouchableOpacity
+          className="bg-green-600 px-4 py-2 rounded-xl self-end mb-4"
+          onPress={() => navigation.navigate('SendMessage')}
+        >
+          <Text className="text-white font-semibold">Nova Mensagem</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={logout}
           className="bg-red-500 px-4 py-2 rounded-xl"

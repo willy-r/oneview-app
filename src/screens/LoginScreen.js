@@ -1,6 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { AuthContext } from '../context/AuthContext';
@@ -19,11 +20,12 @@ export default function LoginScreen() {
     resolver: yupResolver(schema),
   });
   const { login } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const onSubmit = async (data) => {
     const success = await login(data.email, data.password);
     if (!success) {
-      alert('E-mail ou senha inválidos!');
+      Alert.alert('Erro', 'E-mail ou senha inválidos!');
     }
   };
 

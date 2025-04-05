@@ -8,6 +8,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import MessageViewScreen from './src/screens/MessageViewScreen';
+import SendMessageScreen from './src/screens/SendMessageScreen';
 
 import "./global.css"
 
@@ -30,6 +31,7 @@ function Routes() {
         <>
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="MessageView" component={MessageViewScreen} />
+          <Stack.Screen name="SendMessage" component={SendMessageScreen} />
         </>
       ) : (
         <>

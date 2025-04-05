@@ -40,15 +40,15 @@ export default function RegisterScreen() {
         email: data.email,
         password: data.password,
       });
-      alert('Cadastro realizado com sucesso!');
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
       navigation.navigate('Login');
     } catch (error) {
       console.error('Erro ao cadastrar:', error?.response?.data || error.message);
       if (error.response?.status === 409) {
-        alert('E-mail já cadastrado!');
+        Alert.alert('Erro', 'E-mail já cadastrado!');
         return;
       }
-      alert('Erro ao cadastrar');
+      Alert.alert('Erro', 'Erro ao cadastrar');
     }
   };
 

@@ -4,17 +4,29 @@ import { useEffect, useState } from 'react';
 import * as Clipboard from 'expo-clipboard';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useForm, Controller } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { api } from '../services/api';
+
+const schema = yup.object({
+  content: yup.string().min(1, 'Mensagem obrigatória'),
+});
 
 export default function MessageViewScreen() {
   const { params } = useRoute();
   const navigation = useNavigation();
   const messageId = params?.id;
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
 
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copyStatus, setCopyStatus] = useState(false);
-  const [reply, setReply] = useState('');
   const [sending, setSending] = useState(false);
 
   const fetchMessage = async () => {
@@ -30,12 +42,12 @@ export default function MessageViewScreen() {
     }
   };
 
-  const sendReply = async () => {
+  const sendReply = async (data) => {
     try {
       setSending(true);
       await api.post('/messages', {
         to_code: message.sender_code,
-        content: reply,
+        content: data.content,
       });
       Alert.alert('Sucesso', 'Resposta enviada com sucesso!');
     } catch (err) {
@@ -88,18 +100,29 @@ export default function MessageViewScreen() {
         </Text>
 
         <Text className="text-sm font-semibold mb-1">Escreva uma resposta:</Text>
-        <TextInput
-          multiline
-          className="border border-gray-300 rounded-xl px-4 py-3 h-32 mb-4 text-gray-700"
-          placeholder="Digite sua resposta..."
-          value={reply}
-          onChangeText={setReply}
+        <Controller
+          control={control}
+          name="content"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <TextInput
+                multiline
+                className="border border-gray-300 rounded-xl px-4 py-3 h-32 mb-1 text-gray-700"
+                placeholder="Digite sua resposta..."
+                value={value}
+                onChangeText={onChange}
+              />
+              {errors.content && (
+                <Text className="text-red-500 text-sm mb-3">{errors.content.message}</Text>
+              )}
+            </>
+          )}
         />
 
         <TouchableOpacity
           className="bg-blue-600 py-3 rounded-xl"
-          onPress={sendReply}
-          disabled={sending || !reply.trim()}
+          onPress={handleSubmit(sendReply)}
+          disabled={sending}
         >
           <Text className="text-white text-center font-semibold">
             {sending ? 'Enviando...' : 'Enviar resposta'}
