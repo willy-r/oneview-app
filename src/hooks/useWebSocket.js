@@ -2,12 +2,11 @@ import { useEffect, useRef } from 'react';
 
 export function useWebSocket(userId, onMessage) {
   const socketRef = useRef(null);
-  const baseUrl = 'wss://de54-138-0-72-97.ngrok-free.app/ws';
 
   useEffect(() => {
     if (!userId) return;
 
-    const socket = new WebSocket(`${baseUrl}/${userId}`);
+    const socket = new WebSocket(`${process.env.EXPO_PUBLIC_WS_BASE}/ws/${userId}`);
     socketRef.current = socket;
 
     socket.onopen = () => {
