@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator  } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { faker } from '@faker-js/faker';
 import { formatDistanceToNow } from 'date-fns';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -12,6 +13,8 @@ import { api } from '../services/api';
 
 export default function DashboardScreen() {
   const { logout } = useContext(AuthContext);
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
 
   const [code, setCode] = useState('');
   const [messages, setMessages] = useState([]);
@@ -63,8 +66,9 @@ export default function DashboardScreen() {
   };
 
   useEffect(() => {
+    if (!isFocused) return;
     fetchCodeAndMessages();
-  }, []);
+  }, [isFocused]);
 
   if (loading) {
     return (
@@ -117,18 +121,20 @@ export default function DashboardScreen() {
         refreshing={refreshing}
         onRefresh={onRefresh}
         renderItem={({ item }) => (
-          <View className="border-b border-gray-200 py-3">
-            <Text className="text-gray-700 font-medium">{item.senderAlias}</Text>
-            <Text className="text-gray-400 italic">
-              {item.isRead ? 'Mensagem lida' : 'Nova mensagem!'}
-            </Text>
-            <Text className="text-xs text-gray-400 mt-1">
-              {formatDistanceToNow(new Date(item.created_at), {
-                addSuffix: true,
-                locale: ptBR,
-              })}
-            </Text>
-          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('MessageView', { id: item.id })}>
+            <View className="border-b border-gray-200 py-3">
+              <Text className="text-gray-700 font-medium">{item.name}</Text>
+              <Text className="text-gray-400 italic">
+                {item.read_at ? 'Mensagem lida' : 'Nova mensagem!'}
+              </Text>
+              <Text className="text-xs text-gray-400 mt-1">
+                {formatDistanceToNow(new Date(item.created_at), {
+                  addSuffix: true,
+                  locale: ptBR,
+                })}
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>

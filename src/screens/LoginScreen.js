@@ -3,7 +3,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 
 const schema = yup.object({
@@ -12,7 +11,6 @@ const schema = yup.object({
 });
 
 export default function LoginScreen() {
-  const navigation = useNavigation();
   const {
     control,
     handleSubmit,
