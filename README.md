@@ -44,7 +44,7 @@ Abaixo estão algumas capturas de tela e demonstrações do OneView em uso:
 - **Frontend:** React Native + Expo
 - **Estilização:** NativeWind (Tailwind para RN)
 - **Validação de formulário:** react-hook-form + yup
-- **Backend:** Go [Ver aqui](http://github.com/willy/oneview-be)
+- **Backend:** Go [Ver aqui](http://github.com/willy-r/oneview-be)
 
 ---
 
